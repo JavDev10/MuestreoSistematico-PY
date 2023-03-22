@@ -1,10 +1,5 @@
 import customtkinter
 import tkinter as tk
-import tkinter.ttk as ttk
-
-
-estilo = ttk.Style()
-estilo.configure("EstiloBoton.TButton", font=("Arial", 12), foreground="black", background="blue")
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -32,9 +27,9 @@ def TomaDeDatos():
          etiqueta_resultado.config(text=f"Ingrese datos válidos")
 
 ventana = tk.Tk()
-
 ventana.geometry("500x350")
 
+titulo = tk.Label(ventana, text="Muestreo Sistemático",bg="#3f324d",foreground="#fff")
 
 #Ingresar datos
 etiqueta_poblacion = tk.Label(ventana, text="Población:")
@@ -43,19 +38,21 @@ entrada_poblacion = tk.Entry(ventana)
 etiqueta_muestra = tk.Label(ventana, text="Muestra:")
 entrada_muestra = tk.Entry(ventana)
 
-boton_calcular = ttk.Button(ventana, text="Calcular", style="EstiloBoton.TButton", command=TomaDeDatos)
+boton_calcular = tk.Button(ventana, text="Calcular", command=TomaDeDatos)
 
 etiqueta_resultado = tk.Label(ventana, text="")
 
-etiqueta_poblacion.pack()
-entrada_poblacion.pack()
+#Mostrar en pantalla
+titulo.pack(side=tk.TOP, fill = tk.X)
+etiqueta_poblacion.pack(side= tk.LEFT)
+entrada_poblacion.pack(side= tk.LEFT)
 
-etiqueta_muestra.pack()
-entrada_muestra.pack()
+etiqueta_muestra.pack(side= tk.LEFT)
+entrada_muestra.pack(side= tk.LEFT)
 
-boton_calcular.pack()
+boton_calcular.pack(side= tk.BOTTOM)
 
-etiqueta_resultado.pack()
+etiqueta_resultado.pack(side= tk.BOTTOM)
 
 ventana.mainloop()
 
