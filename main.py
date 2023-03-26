@@ -1,61 +1,126 @@
-import customtkinter
 import tkinter as tk
 
-customtkinter.set_appearance_mode("dark")
-customtkinter.set_default_color_theme("dark-blue")
+ventana = tk.Tk()
+ventana.geometry("650x420")
 
-#Tomar info 
-def TomaDeDatos():
-    poblacion = int(entrada_poblacion.get())
+#--------------------------------------------------------------------------------------------------------------------
+#Ventana principal
+ventana.configure()
+tituloPrincipal = tk.Label(ventana, text="Muestreo sistematico",bg="#2e2633",foreground="#fff")
+tituloPrincipal.grid(column=0,row=0,columnspan=4)
+
+#--------------------------------------------------------------------------------------------------------------------
+#Agregar datos
+
+# Crear la arraylist y la variable que almacena el siguiente ID
+arraylist = []
+siguiente_id = 1
+
+entrada_poblacion = tk.Label(ventana)
+# Función que se ejecuta cuando se presiona el botón "Agregar"
+def agregar_a_lista():
+    # Obtener los valores del Textbox
+    parametro1 = txtDato.get()
+    
+    # Agregar los valores a la arraylist
+    global siguiente_id
+    arraylist.append(f"{siguiente_id}. {parametro1}")
+    siguiente_id += 1
+
+    poblacion = 0
+    poblacion = (len(arraylist))
+    
+    entrada_poblacion.config(text=poblacion)
+    
+    # Actualizar la lista de la GUI
+    actualizar_lista()
+
+# Función que actualiza la lista en la GUI
+def actualizar_lista():
+    # Limpiar la lista actual
+    lista.delete(0, tk.END)
+    txtDato.delete(0, tk.END)
+    # Agregar cada elemento de la arraylist
+    for i, elemento in enumerate(arraylist):
+        lista.insert(tk.END, elemento)
+
+dato = tk.Label(ventana, text="Parámetro:")
+
+txtDato = tk.Entry(ventana)
+boton_agregar = tk.Button(ventana, text="Agregar", command= agregar_a_lista)
+lista = tk.Listbox(ventana)
+
+dato.grid(column=0,row=1)
+txtDato.grid(column=0,row=2)
+boton_agregar.grid(column=0,row=3)
+lista.grid(column=0,row=4)
+
+#--------------------------------------------------------------------------------------------------------------------
+#Ventana constante y arranque
+poblacion = len(arraylist)
+constante = 0
+
+etiqueta_arranque = tk.Label(ventana,text="Esperando valores")
+entrada_arranque = tk.Scale(ventana,from_=1,to=constante,orient="horizontal")
+
+constanteV = tk.IntVar()
+
+def CalConst_Arranque():   
     muestra = int(entrada_muestra.get())
-
-    if(poblacion>1 & muestra<poblacion):
+    poblacion = len(arraylist)
+    print(poblacion)
+    
+    if(int(poblacion)>1 & muestra<int(poblacion)):
         
         #Sacar constante
-        constante = poblacion/muestra
+        constante = int(poblacion)/muestra
         etiqueta_resultado.config(text=f"La constante es: {constante}")
 
-        #Elegir valor arranque
-        print("Elija un valor entre 1 y",constante,":")
-        valor_arranque= input()
-        
-        if(int(valor_arranque) > 1 & int(valor_arranque) < int(constante)):
-            print("Valor de arranque:",valor_arranque)
-        else:
-            print("Se tiene que ingresar un un valor entre 1 y",constante)
+        etiqueta_arranque.configure(text=f"Elija un valor entre 1 y {constante}")
+        entrada_arranque.configure(from_=1,to=constante,orient="horizontal")
+
+        constanteV.set(constante)
     else :
-         etiqueta_resultado.config(text=f"Ingrese datos válidos")
+        etiqueta_resultado.config(text=f"Ingrese datos válidos")
 
-ventana = tk.Tk()
-ventana.geometry("500x350")
+seleccionados = []
+listaFinal = tk.Listbox(ventana)
 
-titulo = tk.Label(ventana, text="Muestreo Sistemático",bg="#3f324d",foreground="#fff")
-
-#Ingresar datos
+def GetArranque():
+    ar =entrada_arranque.get()
+    listaFinal.delete(0, tk.END)
+    
+    print(constanteV.get())
+    for i in range(ar-1, len(arraylist),constanteV.get()):
+        if i < len(arraylist):
+            seleccionados.append([arraylist[i]])
+    for dato in seleccionados:
+        listaFinal.insert(tk.END, dato)
+    
+#Calcular Constante
 etiqueta_poblacion = tk.Label(ventana, text="Población:")
-entrada_poblacion = tk.Entry(ventana)
 
 etiqueta_muestra = tk.Label(ventana, text="Muestra:")
 entrada_muestra = tk.Entry(ventana)
 
-boton_calcular = tk.Button(ventana, text="Calcular", command=TomaDeDatos)
+boton_calcular = tk.Button(ventana, text="Calcular", command=CalConst_Arranque)
 
 etiqueta_resultado = tk.Label(ventana, text="")
 
-#Mostrar en pantalla
-titulo.pack(side=tk.TOP, fill = tk.X)
-etiqueta_poblacion.pack(side= tk.LEFT)
-entrada_poblacion.pack(side= tk.LEFT)
+etiqueta_poblacion.grid(column=1,row=1)
+entrada_poblacion.grid(column=1,row=2)
 
-etiqueta_muestra.pack(side= tk.LEFT)
-entrada_muestra.pack(side= tk.LEFT)
+etiqueta_muestra.grid(column=1,row=3)
+entrada_muestra.grid(column=1,row=4)
 
-boton_calcular.pack(side= tk.BOTTOM)
+boton_calcular.grid(column=1,row=5)
 
-etiqueta_resultado.pack(side= tk.BOTTOM)
+etiqueta_resultado.grid(column=1,row=6)
+etiqueta_arranque.grid(column=2,row=1)
+entrada_arranque.grid(column=2,row=3)
+#--------------------------------------------------------------------------------------------------------------------
+boton_lista = tk.Button(ventana, text="Generar lista", command=GetArranque)
 
+boton_lista.grid(column=3,row=4)
+listaFinal.grid(column=4,row=3)
 ventana.mainloop()
-
-
-
-
