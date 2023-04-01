@@ -5,6 +5,7 @@ import sv_ttk
 
 ventana = tk.Tk()
 ventana.title("Muestreo Sistematico")
+ventana.resizable(0,0)
 ventana.geometry("800x480")
 
 #Estilos
@@ -79,7 +80,7 @@ dato.pack(padx=5,pady=10)
 txtDato.pack(padx=5,pady=10,ipadx=32)
 boton_agregar.pack(padx=5,pady=10)
 lista.pack(padx=5,pady=5,ipady=40,ipadx=32)
-msj_error.pack(padx=5,pady=5)
+
 
 #--------------------------------------------------------------------------------------------------------------------
 #Ventana constante y arranque
@@ -90,23 +91,26 @@ etiqueta_arranque = tk.Label(frameConstArr,text="Esperando valores")
 entrada_arranque = tk.Scale(frameConstArr,from_=1,to=constante,orient="horizontal",cursor="dot")
 
 constanteV = tk.IntVar()
+GenerarLista = tk.BooleanVar()
 
 def CalConst_Arranque():   
-    muestra = int(entrada_muestra.get())
-    poblacion = len(arraylist)
+    muestra = entrada_muestra.get()
+    poblacion = int(len(arraylist))
     
-    if(int(poblacion)>1 & muestra<int(poblacion)):
-        
-        #Sacar constante
-        constante = int(poblacion)/muestra
-        etiqueta_resultado.config(text=f"La constante es: {round(constante)}")
-
-        etiqueta_arranque.configure(text=f"Elija un valor entre 1 y {round(constante)}")
-        entrada_arranque.configure(from_=1,to=round(constante),orient="horizontal")
-
-        constanteV.set(round(constante))
+    if(poblacion <= 0):
+        msj_error.configure(text="El número de la poblacion es 0")
     else :
-        etiqueta_resultado.config(text=f"Ingrese datos válidos")
+        if(int(muestra)<poblacion):
+            #Sacar constante
+            constante = poblacion/int(muestra)
+            etiqueta_resultado.config(text=f"La constante es: {round(constante)}")
+
+            etiqueta_arranque.configure(text=f"Elija un valor entre 1 y {round(constante)}")
+            entrada_arranque.configure(from_=1,to=round(constante),orient="horizontal")
+            constanteV.set(round(constante))
+            GenerarLista.set(True)
+        elif (int(muestra)>=poblacion) :
+            msj_error.configure(text="La muestra no puede ser mayor o igual a la poblacion")
 
 seleccionados = []
 lbl_listaFinal = tk.Label(frameResult,text="Listado")
@@ -116,12 +120,15 @@ def GetArranque():
     ar =entrada_arranque.get()
     listaFinal.delete(0, tk.END)
 
-    for i in range(ar-1, len(arraylist),constanteV.get()):
-        if i < len(arraylist):
-            seleccionados.append([arraylist[i]])
-    for dato in seleccionados:
-        listaFinal.insert(tk.END, dato)
-    
+    if(GenerarLista.get()==True):
+        msj_error.configure(text="Lista generada!")
+        for i in range(ar-1, len(arraylist),constanteV.get()):
+            if i < len(arraylist):
+                seleccionados.append([arraylist[i]])
+        for dato in seleccionados:
+            listaFinal.insert(tk.END, dato)
+    else:
+        msj_error.configure(text="Faltan datos para generar lista")
 #Calcular Constante
 etiqueta_poblacion = tk.Label(frameConstArr, text="Población:")
 
@@ -147,12 +154,22 @@ entrada_arranque.pack(padx=5,pady=10)
 boton_lista = ttk.Button(frameConstArr, text="Generar lista", command=GetArranque,style="TButton")
 boton_lista.pack(padx=5,pady=5)
 def LimpiarListas():
+    #Eliminar datos en lista y reinicio de id
+    arraylist.clear()
+    seleccionados.clear()
+    global siguiente_id
+    siguiente_id = 1
+
+    #Eliminar datos en pantalla
     lista.delete(0,tk.END)
     listaFinal.delete(0,tk.END)
+
+    msj_error.configure(text="Listas borradas")
 
 boton_CleanList = ttk.Button(frameResult, text="Limpiar listas", command=LimpiarListas, style="TButton")
 
 lbl_listaFinal.pack(padx=5,pady=10)
 listaFinal.pack(padx=5,pady=15,ipady=50,ipadx=32)
 boton_CleanList.pack()
+msj_error.pack(padx=5,pady=5)
 ventana.mainloop()
