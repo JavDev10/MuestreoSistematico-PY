@@ -4,7 +4,7 @@ import sv_ttk
 
 
 ventana = tk.Tk()
-ventana.title("Muestreo Sistematico")
+ventana.title("CMS")
 ventana.resizable(0,0)
 ventana.geometry("800x480")
 
@@ -12,6 +12,17 @@ ventana.geometry("800x480")
 style = ttk.Style()
 style.configure("TButton", background="#ff1457", foreground="black", font=("Helvetica", 10))
 
+styleLabelT = ttk.Style()
+styleLabelT.configure("T.TLabel", background="#2b2c30", foreground="white", font=("Helvetica", 16, "bold"))
+styleLabel1 = ttk.Style()
+styleLabel1.configure("TLabel", background="#613c4c", foreground="white", font=("Helvetica", 12))
+styleLabel2 = ttk.Style()
+styleLabel2.configure("2.TLabel", background="#453745", foreground="white", font=("Helvetica", 12))
+styleLabel2 = ttk.Style()
+styleLabel2.configure("3.TLabel", background="#35313b", foreground="white", font=("Helvetica", 12))
+
+styleEntry = ttk.Style()
+styleEntry.configure("1.TEntry",fg="blue")
 #--------------------------------------------------------------------------------------------------------------------
 #Ventana principal
 ventana.configure()
@@ -21,7 +32,7 @@ frameConstArr = tk.Frame(ventana,bg="#453745")
 frameResult = tk.Frame(ventana,bg="#35313b")
 frameMjs = tk.Frame(ventana,bg="#b0254f")
 
-tituloPrincipal = tk.Label(frameTitulo, text="Muestreo sistematico",bg="#2b2c30",foreground="#fff")
+tituloPrincipal = ttk.Label(frameTitulo, text="Muestreo sistematico",style="T.TLabel")
 tituloPrincipal.pack(padx=5,pady=5)
 
 frameTitulo.pack(side="top",expand=False,fill="both",ipady=10)
@@ -38,7 +49,7 @@ frameResult.pack(side="left",expand=True,fill="both")
 arraylist = []
 siguiente_id = 1
 
-entrada_poblacion = tk.Label(frameConstArr)
+entrada_poblacion = ttk.Label(frameConstArr,style="2.TLabel")
 msj_error = tk.Label(frameMjs)
 # Función que se ejecuta cuando se presiona el botón "Agregar"
 def agregar_a_lista():
@@ -70,9 +81,11 @@ def actualizar_lista():
     for i, elemento in enumerate(arraylist):
         lista.insert(tk.END, elemento)
 
-dato = tk.Label(frameDatos, text="Parámetro:")
+dato = ttk.Label(frameDatos,text="Parámetro:",style="TLabel")
 
-txtDato = tk.Entry(frameDatos)
+txtDato = ttk.Entry(frameDatos, justify="center")
+
+txtDato.focus_force()
 boton_agregar = ttk.Button(frameDatos, text="Agregar", command= agregar_a_lista,style="TButton")
 lista = tk.Listbox(frameDatos)
 
@@ -87,7 +100,7 @@ lista.pack(padx=5,pady=5,ipady=40,ipadx=32)
 poblacion = len(arraylist)
 constante = 0
 
-etiqueta_arranque = tk.Label(frameConstArr,text="Esperando valores")
+etiqueta_arranque = ttk.Label(frameConstArr,text="Esperando valores",style="2.TLabel")
 entrada_arranque = tk.Scale(frameConstArr,from_=1,to=constante,orient="horizontal",cursor="dot")
 
 constanteV = tk.IntVar()
@@ -113,7 +126,7 @@ def CalConst_Arranque():
             msj_error.configure(text="La muestra no puede ser mayor o igual a la poblacion")
 
 seleccionados = []
-lbl_listaFinal = tk.Label(frameResult,text="Listado")
+lbl_listaFinal = ttk.Label(frameResult,text="Listado",style="3.TLabel")
 listaFinal = tk.Listbox(frameResult)
 
 def GetArranque():
@@ -124,20 +137,20 @@ def GetArranque():
         msj_error.configure(text="Lista generada!")
         for i in range(ar-1, len(arraylist),constanteV.get()):
             if i < len(arraylist):
-                seleccionados.append([arraylist[i]])
+                seleccionados.append(arraylist[i])
         for dato in seleccionados:
             listaFinal.insert(tk.END, dato)
     else:
         msj_error.configure(text="Faltan datos para generar lista")
 #Calcular Constante
-etiqueta_poblacion = tk.Label(frameConstArr, text="Población:")
+etiqueta_poblacion = ttk.Label(frameConstArr, text="Población:",style="2.TLabel")
 
-etiqueta_muestra = tk.Label(frameConstArr, text="Muestra:")
-entrada_muestra = tk.Entry(frameConstArr)
+etiqueta_muestra = ttk.Label(frameConstArr, text="Muestra:",style="2.TLabel")
+entrada_muestra = ttk.Entry(frameConstArr,justify="center")
 
 boton_calcular = ttk.Button(frameConstArr, text="Calcular", command=CalConst_Arranque,style="TButton")
 
-etiqueta_resultado = tk.Label(frameConstArr, text="")
+etiqueta_resultado = ttk.Label(frameConstArr, text="",style="2.TLabel")
 
 etiqueta_poblacion.pack(padx=5,pady=5)
 entrada_poblacion.pack(padx=5,pady=10)
